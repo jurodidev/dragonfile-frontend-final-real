@@ -1,40 +1,25 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL + "/auth";
 
-const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
+export const loginUsuario = (credenciales) =>
+  axios.post(`${API_URL}/login`, credenciales);
 
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+export const registrarUsuario = (datos) =>
+  axios.post(`${API_URL}/register`, datos);
+
+export const guardarToken = (token) => {
+  localStorage.setItem("token", token);
 };
 
-export const obtenerPersonajes = () =>
-  axios.get(`${API_URL}/personajes`, getAuthHeaders());
+export const obtenerToken = () => {
+  return localStorage.getItem("token");
+};
 
-export const obtenerPersonajePorId = (id) =>
-  axios.get(`${API_URL}/personajes/${id}`, getAuthHeaders());
+export const cerrarSesion = () => {
+  localStorage.removeItem("token");
+};
 
-export const crearPersonaje = (personaje) =>
-  axios.post(`${API_URL}/personajes`, personaje, getAuthHeaders());
-
-export const actualizarPersonaje = (id, personaje) =>
-  axios.put(`${API_URL}/personajes/${id}`, personaje, getAuthHeaders());
-
-export const eliminarPersonaje = (id) =>
-  axios.delete(`${API_URL}/personajes/${id}`, getAuthHeaders());
-
-export const obtenerRazas = () =>
-  axios.get(`${API_URL}/catalogo/razas`, getAuthHeaders());
-
-export const obtenerClases = () =>
-  axios.get(`${API_URL}/catalogo/clases`, getAuthHeaders());
-
-export const descargarPdf = (id) =>
-  axios.get(`${API_URL}/personajes/${id}/pdf`, {
-    ...getAuthHeaders(),
-    responseType: "blob",
-  });
+export const usuarioAutenticado = () => {
+  return !!localStorage.getItem("token");
+};
